@@ -1,20 +1,20 @@
 <Title:>{{roomName}} - {_room.visits} visits<Header:>
-<ui:connectionAlert/><Body:>{#if  _loggedIn}
-<div class="nav"><span>Logged In</span><a href="/logout" class="btn">Logout Now!</a></div>{/}
-<div class="well">{#if  _flash as :flash}{#if  _flash.error}
-  <ul class="alert alert-error">{#each  _flash.error}
+<ui:connectionAlert/><Body:>{{#unless _loggedIn}}
+<div class="nav"><span>Logged In</span><a href="/logout" class="btn">Logout Now!</a></div>{{/}}
+<div class="well">{#if _flash as :flash}{#if _flash.error}
+  <ul class="alert alert-error">{#each _flash.error}
     <li>{:error}</li>{/}
-  </ul>{/}{#if  _flash.info}
-  <ul class="alert alert-success">{#each  _flash.info as :info}
+  </ul>{/}{#if _flash.info}
+  <ul class="alert alert-success">{#each _flash.info as :info}
     <li>{:info}</li>{/}
   </ul>{/}{/}
-  <h2>Connect With Something agai</h2>{#if  _user.auth.local}<b>registration:</b>_user.auth.local.username = {_user.auth.local.username}
+  <h2>Connect With Something agai</h2>{{#if _user.auth.local}}<b>registration:</b>_user.auth.local.username = {_user.auth.local.username}
   <hr/>
-  <derby-auth:changePassword/>{else}
+  <derby-auth:changePassword/>{{else}}
   <h3>Login</h3>
   <derby-auth:login/>
   <h3>Register</h3>
-  <derby-auth:register/>{/}
+  <derby-auth:register/>{{/}}
 </div>
 <h1>{_room.welcome}</h1>
 <p>
@@ -25,4 +25,4 @@
 <p>This page has been visited {_room.visits} times. 
   <app:timer/>
 </p>
-<p>Let's go <a href="/{{randomUrl}}">somewhere random</a>.</p><timer:>{#if  _stopped}<a x-bind="click: start">Start timer</a>{else}You have been here for {_timer} seconds. <a x-bind="click: stop">Stop</a>{/}
+<p>Let's go <a href="/{{randomUrl}}">somewhere random</a>.</p><timer:>{#if _stopped}<a x-bind="click: start">Start timer</a>{else}You have been here for {_timer} seconds. <a x-bind="click: stop">Stop</a>{/}

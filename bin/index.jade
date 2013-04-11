@@ -5,7 +5,7 @@
   ui:connectionAlert/
 
 !='<Body:>'
-  if _loggedIn
+  unless! _loggedIn
     .nav
       span Logged In
       a.btn(href='/logout') Logout Now!
@@ -22,7 +22,7 @@
             li {:info}
 
     h2 Connect With Something agai
-    if _user.auth.local
+    if! _user.auth.local
       b registration:
       | _user.auth.local.username = {_user.auth.local.username}
       hr/
