@@ -1,0 +1,51 @@
+!='<Title:>'
+  ='{{roomName}} - {_room.visits} visits'
+
+!='<Header:>'
+  ui:connectionAlert/
+
+!='<Body:>'
+  if _loggedIn
+    .nav
+      span Logged In
+      a.btn(href='/logout') Logout Now!
+
+  .well
+    if _flash as :flash
+      if _flash.error
+        ul.alert.alert-error
+          each _flash.error
+            li {:error}
+      if _flash.info
+        ul.alert.alert-success
+          each _flash.info as :info
+            li {:info}
+
+    h2 Connect With Something agai
+    if _user.auth.local
+      b registration:
+      | _user.auth.local.username = {_user.auth.local.username}
+      hr/
+      derby-auth:changePassword/
+    else
+      h3 Login
+      derby-auth:login/
+      h3 Register
+      derby-auth:register/
+
+  h1 {_room.welcome}
+  p
+    label Welcome message: #{''}
+      input(value='{_room.welcome}')
+  p This page has been visited {_room.visits} times. #{''}
+    app:timer/
+  p Let's go #{''}
+    a(href='/{{randomUrl}}') somewhere random
+    | .
+
+!='<timer:>'
+  if _stopped
+    a(x-bind='click: start') Start timer
+  else
+    | You have been here for {_timer} seconds. #{''}
+    a(x-bind='click: stop') Stop
