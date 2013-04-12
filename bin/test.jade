@@ -5,7 +5,7 @@
   ui:connectionAlert/
 
 !='<Body:>'
-  unless! _loggedIn
+  unless* _loggedIn
     .nav
       span Logged In
       a.btn(href='/logout') Logout Now!
@@ -14,15 +14,15 @@
     if _flash as :flash
       if _flash.error
         ul.alert.alert-error
-          each _flash.error
+          each* _flash.error
             li {:error}
-      if _flash.info
+      if* _flash.info
         ul.alert.alert-success
           each _flash.info as :info
             li {:info}
 
     h2 Connect With Something agai
-    if! _user.auth.local
+    if* _user.auth.local
       b registration:
       | _user.auth.local.username = {_user.auth.local.username}
       hr/
@@ -44,7 +44,7 @@
     | .
 
 !='<timer:>'
-  if _stopped
+  if* _stopped
     a(x-bind='click: start') Start timer
   else
     | You have been here for {_timer} seconds. #{''}

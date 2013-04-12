@@ -20,16 +20,16 @@ else
 {/}
 ```
 
- Append `!` to make static variables:
+ Append `*` to make a non-bound variables:
 ```jade
-if! _flash as :flash
+if* _flash as :flash
   if :flash.error
     ul.alert.alert-error
       each :flash.error
         li {.error}
   if :flash.info
     ul.alert.alert-success
-      each! :flash.info as :info
+      each* :flash.info as :info
         li {{:info}}
 else
   p No notifications
@@ -55,7 +55,7 @@ else
     <p>No notifications</p>
 {{/}}
 ```
- Note that there is no need to append `!` to `else` -- it will automatically inherit the behavior of `if`
+ Note that there is no need to append `*` to `else` -- it will automatically inherit the behavior of `if`
 
 ## Installation
 
@@ -64,8 +64,7 @@ $ cd /path/to/project/
 $ npm install git://github.com/cray0000/jade.git --save-dev
 ```
 
- Can be used to compile your views from /jade/**/*.jade to /views/**/*.html
- or in conjunction with task-runners like [grunt-contrib-jade](https://github.com/gruntjs/grunt-contrib-jade) or simply by calling something like:
+ Can be used in conjunction with task-runners like [grunt-contrib-jade](https://github.com/cray0000/grunt-contrib-jade) or directly by calling for example:
 
 ```bash
 $ ./node_modules/.bin/jade -w ./jade/ --out ./views/**/
