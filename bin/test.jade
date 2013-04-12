@@ -1,24 +1,29 @@
-!='<Title:>'
-  ='{{roomName}} - {_room.visits} visits'
 
-!='<Header:>'
+import:(src='popups', ns='')
+import:(src='games')
+
+Title:
+  | {{roomName}} - {_room.visits} visits
+
+Header:
   ui:connectionAlert/
 
-!='<Body:>'
-  unless* _loggedIn
-    .nav
-      span Logged In
-      a.btn(href='/logout') Logout Now!
+Body:
+  with _game.questions[_author] as :question_author
+    if* equal(_users.status[:question_author], "in_game")
+      .nav
+        span Author of the question is online.
+        a.btn(href='/chat/{:question_author}') Chat with him
 
   .well
     if _flash as :flash
-      if _flash.error
+      if :flash.error
         ul.alert.alert-error
           each* _flash.error
             li {:error}
-      if* _flash.info
+      if* :flash.info
         ul.alert.alert-success
-          each _flash.info as :info
+          each :flash.info as :info
             li {:info}
 
     h2 Connect With Something agai
@@ -33,7 +38,9 @@
       h3 Register
       derby-auth:register/
 
-  h1 {_room.welcome}
+  if _username
+    app:welcome(title='Welcome {{_username}}')
+      p We are happy to see you again at {{_siteName}}!
   p
     label Welcome message: #{''}
       input(value='{_room.welcome}')
@@ -43,8 +50,12 @@
     a(href='/{{randomUrl}}') somewhere random
     | .
 
-!='<timer:>'
-  if* _stopped
+welcome:(nonvoid)
+  h1 {{@title}}
+  | {{@content}}
+
+timer:
+  if _stopped
     a(x-bind='click: start') Start timer
   else
     | You have been here for {_timer} seconds. #{''}

@@ -3,7 +3,11 @@
  Jade fork for derby.js templates compilation (not the actual Derby.js template engine).
  ## [Jade documentation](https://github.com/visionmedia/jade)
 
- Makes `if, else, else if, unless, with, each` compile into derby View-variables.
+ Supports derby-specific tags that ends with `:` and makes `if, else, else if, unless, with, each` compile into derby View-variables.
+
+## Derby.js-specific syntax
+
+### Conditionals, `each`, `with`
 
 ```jade
 if _loggedIn
@@ -56,6 +60,30 @@ else
 {{/}}
 ```
  Note that there is no need to append `*` to `else` -- it will automatically inherit the behavior of `if`
+
+### `import:` and template declarations
+
+```jade
+import:(src='auth', ns='')
+import:(src='games')
+
+Title:
+  | My cool app
+
+Body:
+  app:welcome(title='Welcome {_username}')
+    p We are glad to see you!
+
+Footer:
+  app:copyright/
+
+welcome:(nonvoid)
+  h1 {{@title}}
+  | {{@content}}
+
+copyright:
+  p Use it however you want {_username}!
+```
 
 ## Installation
 

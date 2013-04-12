@@ -1,28 +1,41 @@
-<Title:>{{roomName}} - {_room.visits} visits<Header:>
-<ui:connectionAlert/><Body:>{{#unless _loggedIn}}
-<div class="nav"><span>Logged In</span><a href="/logout" class="btn">Logout Now!</a></div>{{/}}
-<div class="well">{#if _flash as :flash}{#if _flash.error}
-  <ul class="alert alert-error">{{#each _flash.error}}
-    <li>{:error}</li>{{/}}
-  </ul>{/}{{#if _flash.info}}
-  <ul class="alert alert-success">{#each _flash.info as :info}
-    <li>{:info}</li>{/}
-  </ul>{{/}}{/}
-  <h2>Connect With Something agai</h2>{{#if _user.auth.local}}<b>registration:</b>_user.auth.local.username = {_user.auth.local.username}
-  <hr/>
-  <derby-auth:changePassword/>{{else}}
-  <h3>Login</h3>
-  <derby-auth:login/>
-  <h3>Register</h3>
-  <derby-auth:register/>{{/}}
-</div>
-<h1>{_room.welcome}</h1>
-<p>
-  <label>Welcome message: 
-    <input value="{_room.welcome}"/>
-  </label>
-</p>
-<p>This page has been visited {_room.visits} times. 
-  <app:timer/>
-</p>
-<p>Let's go <a href="/{{randomUrl}}">somewhere random</a>.</p><timer:>{{#if _stopped}}<a x-bind="click: start">Start timer</a>{{else}}You have been here for {_timer} seconds. <a x-bind="click: stop">Stop</a>{{/}}
+
+<import: src="popups" ns="">
+<import: src="games">
+<Title:>{{roomName}} - {_room.visits} visits
+<Header:>
+  <ui:connectionAlert/>
+
+<Body:>{#with _game.questions[_author] as :question_author}{{#if equal(_users.status[:question_author], "in_game")}}
+  <div class="nav"><span>Author of the question is online.</span><a href="/chat/{:question_author}" class="btn">Chat with him</a></div>{{/}}{/}
+  <div class="well">{#if _flash as :flash}{#if :flash.error}
+    <ul class="alert alert-error">{{#each _flash.error}}
+      <li>{:error}</li>{{/}}
+    </ul>{/}{{#if :flash.info}}
+    <ul class="alert alert-success">{#each :flash.info as :info}
+      <li>{:info}</li>{/}
+    </ul>{{/}}{/}
+    <h2>Connect With Something agai</h2>{{#if _user.auth.local}}<b>registration:</b>_user.auth.local.username = {_user.auth.local.username}
+    <hr/>
+    <derby-auth:changePassword/>{{else}}
+    <h3>Login</h3>
+    <derby-auth:login/>
+    <h3>Register</h3>
+    <derby-auth:register/>{{/}}
+  </div>{#if _username}
+  <app:welcome title="Welcome {{_username}}">
+    <p>We are happy to see you again at {{_siteName}}!</p>
+  </app:welcome>{/}
+  <p>
+    <label>Welcome message: 
+      <input value="{_room.welcome}"/>
+    </label>
+  </p>
+  <p>This page has been visited {_room.visits} times. 
+    <app:timer/>
+  </p>
+  <p>Let's go <a href="/{{randomUrl}}">somewhere random</a>.</p>
+
+<welcome: nonvoid="nonvoid">
+  <h1>{{@title}}</h1>{{@content}}
+
+<timer:>{#if _stopped}<a x-bind="click: start">Start timer</a>{else}You have been here for {_timer} seconds. <a x-bind="click: stop">Stop</a>{/}
