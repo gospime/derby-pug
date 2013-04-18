@@ -39,7 +39,10 @@ Body:
       derby-auth:register/
 
   if _username
-    app:welcome(title='Welcome {{_username}}')
+    app:welcome
+      @title
+        | Welcome 
+        i {{_username}}
       p We are happy to see you again at {{_siteName}}!
   p
     label Welcome message: #{''}

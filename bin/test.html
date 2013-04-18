@@ -22,7 +22,8 @@
     <h3>Register</h3>
     <derby-auth:register/>{{/}}
   </div>{#if _username}
-  <app:welcome title="Welcome {{_username}}">
+  <app:welcome>
+    <@title>Welcome <i>{{_username}}</i></@title>
     <p>We are happy to see you again at {{_siteName}}!</p>
   </app:welcome>{/}
   <p>
