@@ -98,6 +98,9 @@ $ npm install git://github.com/cray0000/jade.git --save-dev
 $ ./node_modules/.bin/jade -w ./jade/ --out ./views/**/
 ```
 
+## Known bugs
+ Can't use `'` inside of conditionals, `each`, `with`. Use `"` instead.
+
 ## Screenshot
 ![Screenshot of Webstorm](https://raw.github.com/cray0000/jade/master/bin/derby-jade.png "Screenshot of Webstorm")
 
