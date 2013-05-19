@@ -9,6 +9,11 @@ Header:
   ui:connectionAlert/
 
 Body:
+  p Hello World,
+    | how are you
+    | doing?
+    | I'm fine,
+    | thank you!
   with _game.questions[_author] as :question_author
     if* equal(_users.status[:question_author], "in_game")
       .nav
