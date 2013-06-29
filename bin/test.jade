@@ -46,7 +46,7 @@ Body:
   if _username
     app:welcome
       @title
-        | Welcome 
+        | Welcome
         i {{_username}}
       p We are happy to see you again at {{_siteName}}!
   p
@@ -68,3 +68,12 @@ timer:
   else
     | You have been here for {_timer} seconds. #{''}
     a(x-bind='click: stop') Stop
+
+Footer:
+  each _page.game.roundsArray as :round
+    if* :round.ready
+      p Ready
+    else if :round.steady
+      p Steady
+    else
+      p Go!!!
