@@ -1,0 +1,16 @@
+- dash = '&sp;&ndash;&sp;'
+
+connectionAlert:
+  .ui-connection
+    unless equal($connection.state, 'connected')
+      p.alert
+        if* equal($connection.state, 'stopped')
+          | Unable to reconnect
+          | #{dash}
+          a(x-bind='click: reload') Reload
+        else
+          span {sentenceCase($connection.state)}
+          span
+            unless :self.hideReconnect as :hideReconnect
+              | #{dash}
+              a(x-bind='click: reconnect') Reconnect
