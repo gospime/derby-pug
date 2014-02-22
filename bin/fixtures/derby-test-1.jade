@@ -67,7 +67,7 @@ timer:
     a(x-bind='click: start') Start timer
   else
     | You have been here for {{_timer}} seconds.
-    a(on-click="stop(#first, #second, _page.third, 'hello')") Stop
+    a(on-click="stop(#first, _page.third, 'hello')") Stop
 
 Footer:
   each _page.game.roundsArray as #round
