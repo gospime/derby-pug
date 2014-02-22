@@ -1,7 +1,7 @@
 
 <import: src="popups" ns="">
 <import: src="games">
-<Title:>{{roomName}} - {_room.visits} visits
+<Title:>{{roomName}} - {{_room.visits}} visits
 <Header:>
   <ui:connectionAlert/>
 
@@ -9,35 +9,35 @@
   <p>
     Hello World,     how are you     doing?     I'm fine,     thank you!
   </p>
-  {#with _game.questions[_author] as :question_author}
-    {{#if equal(_users.status[:question_author], "in_game")}}
+  {{with _game.questions[_author] as #question_author}}
+    {{if equal(_users.status[#question_author], "in_game")}}
       <div class="nav">
         <span>Author of the question is online.</span>
-        <a href="/chat/{:question_author}" class="btn">Chat with him</a>
+        <a href="/chat/{{#question_author}}" class="btn">Chat with him</a>
       </div>
-    {{/}}
-  {/}
+    {{/if}}
+  {{/with}}
   <div class="well">
-    {#if _flash as :flash}
-      {#if :flash.error}
+    {{if _flash as #flash}
+      {{if #flash.error}}
         <ul class="alert alert-error">
-          {{#each _flash.error}}
-            <li>{:error}</li>
-          {{/}}
+          {{each _flash.error as #error}}
+            <li>{{#error}}</li>
+          {{/each}}
         </ul>
-      {/}
-      {{#if :flash.info}}
+      {{/if}}
+      {{if #flash.info}}
         <ul class="alert alert-success">
-          {#each :flash.info as :info}
-            <li>{:info}</li>
-          {/}
+          {{each #flash.info as #info}}
+            <li>{{#info}}</li>
+          {{/each}}
         </ul>
-      {{/}}
-    {/}
+      {{/if}}
+    {{/if}}
     <h2>Connect With Something agai</h2>
-    {{#if _user.auth.local}}
+    {{if _user.auth.local}}
       <b>registration:</b>
-      _user.auth.local.username = {_user.auth.local.username}
+      _user.auth.local.username = {{_user.auth.local.username}}
       <hr/>
       <derby-auth:changePassword/>
     {{else}}
@@ -45,51 +45,51 @@
       <derby-auth:login/>
       <h3>Register</h3>
       <derby-auth:register/>
-    {{/}}
+    {{/if}}
   </div>
-  {#if _username}
+  {{if _username}}
     <app:welcome>
-      <@title>
+      <title>
         Welcome <i>{{_username}}</i>
-      </@title>
+      </title>
       <p>We are happy to see you again at {{_siteName}}!</p>
     </app:welcome>
-  {/}
+  {{/if}}
   <p>
     <label>
       Welcome message:
-      <input value="{_room.welcome}"/>
+      <input value="{{_room.welcome}}"/>
     </label>
   </p>
   <p>
-    This page has been visited {_room.visits} times.
+    This page has been visited {{_room.visits}} times.
     <app:timer/>
   </p>
   <p>
     Let's go <a href="/{{randomUrl}}">somewhere random</a>.
   </p>
 
-<welcome: nonvoid="nonvoid">
+<welcome:>
   <h1>{{@title}}</h1>
   {{@content}}
 
 <timer:>
-  {#if _stopped}
+  {{if _stopped}}
     <a x-bind="click: start">
       Start timer
     </a>
-  {else}
-    You have been here for {_timer} seconds.
+  {{else}}
+    You have been here for {{_timer}} seconds.
     <a x-bind="click: stop">Stop</a>
-  {/}
+  {{/if}}
 
 <Footer:>
-  {#each _page.game.roundsArray as :round}
-    {{#if :round.ready}}
+  {{each _page.game.roundsArray as #round}}
+    {{if #round.ready}}
       <p>Ready</p>
-    {{else if :round.steady}}
+    {{else if #round.steady}}
       <p>Steady</p>
     {{else}}
       <p>Go!!!</p>
-    {{/}}
-  {/}
+    {{/if}}
+  {{/each}}

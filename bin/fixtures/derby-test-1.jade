@@ -3,7 +3,7 @@ import:(src='popups', ns='')
 import:(src='games')
 
 Title:
-  | {{roomName}} - {_room.visits} visits
+  | {{roomName}} - {{_room.visits}} visits
 
 Header:
   ui:connectionAlert/
@@ -14,27 +14,27 @@ Body:
     | doing?
     | I'm fine,
     | thank you!
-  with _game.questions[_author] as :question_author
-    if* equal(_users.status[:question_author], "in_game")
+  with _game.questions[_author] as #question_author
+    if equal(_users.status[#question_author], "in_game")
       .nav
         span Author of the question is online.
-        a.btn(href='/chat/{:question_author}') Chat with him
+        a.btn(href='/chat/{{#question_author}}') Chat with him
 
   .well
-    if _flash as :flash
-      if :flash.error
+    if _flash as #flash
+      if #flash.error as #error
         ul.alert.alert-error
-          each* _flash.error
-            li {:error}
-      if* :flash.info
+          each _flash.error
+            li {{#error}}
+      if #flash.info
         ul.alert.alert-success
-          each :flash.info as :info
-            li {:info}
+          each #flash.info as #info
+            li {{#info}}
 
     h2 Connect With Something agai
-    if* _user.auth.local
+    if _user.auth.local
       b registration:
-      | _user.auth.local.username = {_user.auth.local.username}
+      | _user.auth.local.username = {{_user.auth.local.username}}
       hr/
       derby-auth:changePassword/
     else
@@ -45,16 +45,16 @@ Body:
 
   if _username
     app:welcome
-      @title
+      title
         | Welcome
         i {{_username}}
       p We are happy to see you again at {{_siteName}}!
   p
-    label Welcome message: #{''}
-      input(value='{_room.welcome}')
-  p This page has been visited {_room.visits} times. #{''}
+    label Welcome message:
+      input(value='{{_room.welcome}}')
+  p This page has been visited {{_room.visits}} times.
     app:timer/
-  p Let's go #{''}
+  p Let's go
     a(href='/{{randomUrl}}') somewhere random
     | .
 
@@ -66,14 +66,14 @@ timer:
   if _stopped
     a(x-bind='click: start') Start timer
   else
-    | You have been here for {_timer} seconds. #{''}
-    a(x-bind='click: stop') Stop
+    | You have been here for {{_timer}} seconds.
+    a(on-click="stop(#first, #second, _page.third, 'hello')") Stop
 
 Footer:
-  each _page.game.roundsArray as :round
-    if* :round.ready
+  each _page.game.roundsArray as #round
+    if #round.ready
       p Ready
-    else if :round.steady
+    else if #round.steady
       p Steady
     else
       p Go!!!
