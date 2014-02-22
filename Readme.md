@@ -1,9 +1,10 @@
 # Jade static compiler for Derby.js
 
- Jade fork for derby.js templates compilation (not the actual Derby.js template engine).
- ## [Jade documentation](https://github.com/visionmedia/jade)
+Jade fork for derby.js templates compilation (not the actual Derby.js template engine). [Jade documentation](https://github.com/visionmedia/jade)
 
- Supports derby-specific tags that ends with `:` and makes `if, else, else if, unless, with, each` compile into derby View-variables.
+Supports derby-specific tags that ends with `:` and makes `if, else, else if, unless, with, each` compile into derby View-variables.
+
+### This is the Jade compiler for **Derby.js 0.5**! For **Derby.js 0.6** use [**0.6** branch](https://github.com/cray0000/jade/tree/0.6).
 
 ## Derby.js-specific syntax
 
