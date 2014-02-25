@@ -1,9 +1,9 @@
 # Jade static compiler for Derby.js
 
- Jade fork for derby.js templates compilation (not the actual Derby.js template engine).
- ## [Jade documentation](https://github.com/visionmedia/jade)
+Jade fork for derby.js templates compilation (not the actual Derby.js template engine).
+## [Jade documentation](https://github.com/visionmedia/jade)
 
- Supports derby-specific tags that ends with `:` and makes `if, else, else if, unless, with, each` compile into derby View-variables.
+Supports derby-specific tags that ends with `:` and makes `if, else, else if, unless, with, each` compile into derby View-variables.
 
 ## Derby.js-specific syntax
 
@@ -11,88 +11,87 @@
 
 ```jade
 if _loggedIn
-  h1 Hello, {_username}
+  h1 Hello, {{_username}}
 else
   a(href='/login') Login
 ```
- compiles to
+compiles to
 ```html
-{#if _loggedIn}
-    <h1>Hello, {_username}</h1>
-{else}
+{{if _loggedIn}}
+    <h1>Hello, {{_username}}</h1>
+{{else}}
     <a href="/login">Login</a>
-{/}
+{{/}}
 ```
 
- Append `*` to make a non-bound variables:
+Another example:
 ```jade
-if* _flash as :flash
-  if :flash.error
+if _flash as #flash
+  if #flash.error
     ul.alert.alert-error
-      each :flash.error
-        li {.error}
-  if :flash.info
+      each #flash.error
+        li {{this.error}}
+  if #flash.info
     ul.alert.alert-success
-      each* :flash.info as :info
-        li {{:info}}
+      each #flash.info as #info
+        li {{#info}}
 else
   p No notifications
 ```
  compiles to
 ```html
-{{#if _flash as :flash}}
-    {#if :flash.error}
+{{if _flash as #flash}}
+    {{if #flash.error}}
         <ul class="alert alert-error">
-            {#each :flash.error}
-                <li>{.error}</li>
-            {/}
-        </ul>
-    {/}
-    {#if :flash.info}
-        <ul class="alert alert-success">
-            {{#each :flash.info as :info}}
-                <li>{{:info}}</li>
+            {{each #flash.error}}
+                <li>{{this.error}}</li>
             {{/}}
         </ul>
-    {/}
+    {{/}}
+    {{if #flash.info}}
+        <ul class="alert alert-success">
+            {{#each #flash.info as #info}}
+                <li>{{#info}}</li>
+            {{/}}
+        </ul>
+    {{/}}
 {{else}}
     <p>No notifications</p>
 {{/}}
 ```
- Note that there is no need to append `*` to `else` -- it will automatically inherit the behavior of `if`
 
 ### `import:` and template declarations
 
 ```jade
-import:(src='auth', ns='')
-import:(src='games')
+import:(src='./auth', ns='')
+import:(src='./games')
 
 Title:
   | My cool app
 
 Body:
-  app:welcome(title='Welcome {_username}')
+  view(name='welcome', title='Welcome {{_username}}')
     p We are glad to see you!
 
 Footer:
-  app:copyright/
+  view(name='copyright')
 
-welcome:(nonvoid)
+welcome:
   h1 {{@title}}
   | {{@content}}
 
 copyright:
-  p Use it however you want {_username}!
+  p Use it however you want {{_username}}!
 ```
 
 ## Installation
 
 ```bash
 $ cd /path/to/project/
-$ npm install git://github.com/cray0000/jade.git --save-dev
+$ npm install git://github.com/cray0000/derby-jade.git --save-dev
 ```
 
- Can be used in conjunction with task-runners like [grunt-contrib-jade](https://github.com/cray0000/grunt-contrib-jade) or directly by calling for example:
+Can be used in conjunction with task-runners like [grunt-contrib-jade](https://github.com/cray0000/grunt-contrib-jade) or directly by calling for example:
 
 ```bash
 $ ./node_modules/.bin/jade -w ./jade/ --out ./views/**/
