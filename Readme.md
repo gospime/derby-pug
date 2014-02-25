@@ -10,15 +10,15 @@ Supports derby-specific tags that ends with `:` and makes `if, else, else if, un
 ### Conditionals, `each`, `with`
 
 ```jade
-if _loggedIn
-  h1 Hello, {{_username}}
+if _session.loggedIn
+  h1 Hello, {{_session.username}}
 else
   a(href='/login') Login
 ```
 compiles to
 ```html
-{{if _loggedIn}}
-    <h1>Hello, {{_username}}</h1>
+{{if _session.loggedIn}}
+    <h1>Hello, {{_session.username}}</h1>
 {{else}}
     <a href="/login">Login</a>
 {{/}}
@@ -26,7 +26,7 @@ compiles to
 
 Another example:
 ```jade
-if _flash as #flash
+if _page.flash as #flash
   if #flash.error
     ul.alert.alert-error
       each #flash.error
@@ -40,7 +40,7 @@ else
 ```
  compiles to
 ```html
-{{if _flash as #flash}}
+{{if _page.flash as #flash}}
     {{if #flash.error}}
         <ul class="alert alert-error">
             {{each #flash.error}}
@@ -70,7 +70,7 @@ Title:
   | My cool app
 
 Body:
-  view(name='welcome', title='Welcome {{_username}}')
+  view(name='welcome', title='Welcome {{_session.username}}')
     p We are glad to see you!
 
 Footer:
@@ -81,7 +81,7 @@ welcome:
   | {{@content}}
 
 copyright:
-  p Use it however you want {{_username}}!
+  p Use it however you want {{_session.username}}!
 ```
 
 ## Installation
