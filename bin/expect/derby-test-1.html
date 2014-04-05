@@ -9,14 +9,16 @@
   <p>
     Hello World,     how are you     doing?     I'm fine,     thank you!
   </p>
-  {{with _game.questions[_author] as #question_author}}
-    {{if equal(_users.status[#question_author], "in_game")}}
-      <div class="nav">
-        <span>Author of the question is online.</span>
-        <a href="/chat/{{#question_author}}" class="btn">Chat with him</a>
-      </div>
-    {{/if}}
-  {{/with}}
+  {{bound}}
+    {{with _game.questions[_author] as #question_author}}
+      {{if equal(_users.status[#question_author], "in_game")}}
+        <div class="nav">
+          <span>Author of the question is online.</span>
+          <a href="/chat/{{#question_author}}" class="btn">Chat with him</a>
+        </div>
+      {{/if}}
+    {{/with}}
+  {{/}}
   <div class="well">
     {{if _flash as #flash}
       {{if #flash.error}}
@@ -29,7 +31,9 @@
       {{if #flash.info}}
         <ul class="alert alert-success">
           {{each #flash.info as #info}}
-            <li>{{#info}}</li>
+            {{unbound}}
+              <li>{{#info}}</li>
+            {{/}}
           {{/each}}
         </ul>
       {{/if}}

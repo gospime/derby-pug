@@ -14,11 +14,12 @@ Body:
     | doing?
     | I'm fine,
     | thank you!
-  with _game.questions[_author] as #question_author
-    if equal(_users.status[#question_author], "in_game")
-      .nav
-        span Author of the question is online.
-        a.btn(href='/chat/{{#question_author}}') Chat with him
+  bound
+    with _game.questions[_author] as #question_author
+      if equal(_users.status[#question_author], "in_game")
+        .nav
+          span Author of the question is online.
+          a.btn(href='/chat/{{#question_author}}') Chat with him
 
   .well
     if _flash as #flash
@@ -29,7 +30,8 @@ Body:
       if #flash.info
         ul.alert.alert-success
           each #flash.info as #info
-            li {{#info}}
+            unbound
+              li {{#info}}
 
     h2 Connect With Something agai
     if _user.auth.local
