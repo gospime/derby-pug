@@ -5,6 +5,18 @@ Jade fork for derby.js templates compilation (not the actual Derby.js template e
 
 Supports derby-specific tags that ends with `:` and makes `if, else, else if, unless, with, each` compile into derby View-variables.
 
+## Usage
+
+In your server-side code BEFORE requiring the app do
+```js
+// /src/server/index.js
+
+// Add Jade compilation support
+derby.use( require('derby-jade') );
+// AFTER that require your derby app
+var app = require('../app');
+```
+
 ## Derby.js-specific syntax
 
 ### Conditionals, `each`, `with`
