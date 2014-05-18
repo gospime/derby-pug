@@ -10,8 +10,7 @@ var jadeCompiler = function(file, filename, options) {
   return out;
 };
 
-module.exports = function(derby) {
-  var App = Object.getPrototypeOf(derby).App;
-  App.prototype.viewExtensions.push('.jade');
-  App.prototype.compilers['.jade'] = jadeCompiler;
+module.exports = function(app) {
+  app.viewExtensions.push('.jade');
+  app.compilers['.jade'] = jadeCompiler;
 };
