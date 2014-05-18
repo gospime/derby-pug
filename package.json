@@ -13,7 +13,7 @@
   "bugs": {
     "url": "git://github.com/cray0000/derby-jade/issues"
   },
-  "main": "./index.js",
+  "main": "./derby_adapter.js",
   "bin": {
     "jade": "./bin/jade"
   },

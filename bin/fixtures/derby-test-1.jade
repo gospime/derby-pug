@@ -33,12 +33,13 @@ Body:
             unbound
               li {{#info}}
 
-    h2 Connect With Something agai
+    h2 Connect With Something again
     if _user.auth.local
-      b registration:
-      | _user.auth.local.username = {{_user.auth.local.username}}
-      hr/
-      derby-auth:changePassword/
+      on _user.auth.local
+        b registration:
+        | _user.auth.local.username = {{_user.auth.local.username}}
+        hr/
+        derby-auth:changePassword/
     else
       h3 Login
       derby-auth:login/
@@ -46,11 +47,12 @@ Body:
       derby-auth:register/
 
   if _username
-    app:welcome
-      title
-        | Welcome
-        i {{_username}}
-      p We are happy to see you again at {{_siteName}}!
+    unescaped
+      app:welcome
+        title
+          | Welcome
+          i {{_username}}
+        p We are happy to see you again at {{_siteName}}!
   p
     label Welcome message:
       input(value='{{_room.welcome}}')
