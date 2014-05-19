@@ -1,7 +1,7 @@
 {
   "name": "derby-jade",
   "description": "Jade for Derby.js",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "author": {
     "name": "Pavel Zhukov",
     "email": "cray0000@gmail.com"
