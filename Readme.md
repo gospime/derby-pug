@@ -18,7 +18,7 @@ Make sure this is before any calls to `app.loadViews()`.
 
 ## Coffeescript
 
-If you want to use Coffeescript in instead of Javascript in templates:
+If you want to use Coffeescript instead of Javascript in templates:
 
 ```js
 // Add Jade compilation support
@@ -27,7 +27,8 @@ app.serverUse(module, 'derby-jade', {coffee: true});
 Then you can do something like this:
 ```html
 if a and b
-  p a(on-click="console.log c or 'log'") {{d or 'Click Me'}}
+  p 
+    a(on-click="console.log c or 'log'") {{d or 'Click Me'}}
 ```
 
 ## Derby.js-specific syntax
