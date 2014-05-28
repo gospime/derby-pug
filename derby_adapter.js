@@ -1,7 +1,7 @@
 var jade = require('./index');
+var options = {};
 
-var jadeCompiler = function(file, filename, options) {
-  options || (options = {});
+var jadeCompiler = function(file, filename) {
   var out;
   jade.renderFile(filename, options, function(err, html) {
     if (err) throw err;
@@ -10,7 +10,8 @@ var jadeCompiler = function(file, filename, options) {
   return out;
 };
 
-module.exports = function(app) {
+module.exports = function(app, opts) {
+  if (opts) options = opts;
   app.viewExtensions.push('.jade');
   app.compilers['.jade'] = jadeCompiler;
 };
