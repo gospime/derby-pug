@@ -27,7 +27,7 @@ app.serverUse(module, 'derby-jade', {coffee: true});
 Then you can do something like this:
 ```html
 if a and b
-  p a(on-click="console.log c or 'log'") {{d or 'Click Me}}
+  p a(on-click="console.log c or 'log'") {{d or 'Click Me'}}
 ```
 
 ## Derby.js-specific syntax
