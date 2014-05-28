@@ -21,10 +21,10 @@
   "dependencies": {
     "commander": "0.6.1",
     "mkdirp": "0.3.x",
-    "transformers": "~1.8.0"
+    "transformers": "~1.8.0",
+    "coffee-script": "~1.7.1"
   },
   "devDependencies": {
-    "coffee-script": "*",
     "mocha": "*",
     "markdown": "*",
     "stylus": "*",
