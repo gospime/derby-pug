@@ -109,21 +109,3 @@ welcome:
 copyright:
   p Use it however you want {{_session.username}}!
 ```
-
-## Installation
-
-```bash
-$ cd /path/to/project/
-$ npm install git://github.com/cray0000/derby-jade.git --save-dev
-```
-
-Can be used in conjunction with task-runners like [grunt-contrib-jade](https://github.com/cray0000/grunt-contrib-jade) or directly by calling for example:
-
-```bash
-$ ./node_modules/.bin/jade -w ./jade/ --out ./views/**/
-```
-
-## Screenshot
-![Screenshot of Webstorm](https://raw.github.com/cray0000/jade/master/bin/derby-jade.png "Screenshot of Webstorm")
-
-
