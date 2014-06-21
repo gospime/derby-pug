@@ -1,27 +1,29 @@
-# Jade static compiler for Derby.js
+# Derby-Jade
 
-Jade fork for derby.js templates compilation (not the actual Derby.js template engine).
-## [Jade documentation](https://github.com/visionmedia/jade)
+- Jade compiler for Derby
+- Derby 0.6 version is the only supported (for previous Derby use 0.5 branch)
+- Supports derby-specific tags that ends with `:` and makes `if, else, else if, unless, with, each` compile into derby View-variables
+- Colons after derby-specific tags are optional
+- Coffeescript support
 
-Supports derby-specific tags that ends with `:` and makes `if, else, else if, unless, with, each` compile into derby View-variables.
+## Known Issues
+- If you on Coffescript, use this.contextfield or @.contextfield to access context and @fieldname to access component fields as in original Derby syntax
 
-## Usage
-
-Right after creating your Derby app, add:
-
+### Installation
+```
+npm install derby-jade
+```
+### Setting
 ```js
-// Add Jade compilation support
 app.serverUse(module, 'derby-jade');
+// before app.loadViews();
 ```
 
-Make sure this is before any calls to `app.loadViews()`.
-
-## Coffeescript
+### Coffeescript
 
 If you want to use Coffeescript instead of Javascript in templates:
 
 ```js
-// Add Jade compilation support
 app.serverUse(module, 'derby-jade', {coffee: true});
 ```
 Then you can do something like this:
@@ -29,7 +31,11 @@ Then you can do something like this:
 if a and b
   p 
     a(on-click="console.log c or 'log'") {{d or 'Click Me'}}
+  script.
+    here = canbe + coffee and script
 ```
+
+### Usage
 
 ## Derby.js-specific syntax
 
@@ -90,22 +96,28 @@ else
 
 ```jade
 import:(src='./auth', ns='')
-import:(src='./games')
+import(src='./games')
 
 Title:
   | My cool app
 
-Body:
+Body
   view(name='welcome', title='Welcome {{_session.username}}')
     p We are glad to see you!
 
 Footer:
   view(name='copyright')
 
-welcome:
+welcome
   h1 {{@title}}
   | {{@content}}
 
 copyright:
   p Use it however you want {{_session.username}}!
 ```
+
+
+## Screenshot
+![Screenshot of Webstorm](https://raw.github.com/cray0000/jade/master/bin/derby-jade.png "Screenshot of Webstorm")
+
+
