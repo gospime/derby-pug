@@ -84,7 +84,7 @@ else
     {{/}}
     {{if #flash.info}}
         <ul class="alert alert-success">
-            {{#each #flash.info as #info}}
+            {{each #flash.info as #info}}
                 <li>{{#info}}</li>
             {{/}}
         </ul>
