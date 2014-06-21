@@ -4,9 +4,11 @@
 - Derby 0.6 version is the only supported (for previous Derby use 0.5 branch)
 - Supports derby-specific tags that ends with `:` and makes `if, else, else if, unless, with, each` compile into derby View-variables
 - Colons after derby-specific tags are optional
+- process.env.DEBUG = 'derby-jade'; enables debug info
 - Coffeescript support
 
 ## Known Issues
+- Line numbers in Jade errors can be wrong, because we compile file by parts
 - If you on Coffescript, use this.contextfield or @.contextfield to access context and @fieldname to access component fields as in original Derby syntax
 
 ### Installation
