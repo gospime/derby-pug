@@ -8,10 +8,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/cray0000/derby-jade.git"
+    "url": "git://github.com/derbyparty/derby-jade.git"
   },
   "bugs": {
-    "url": "git://github.com/cray0000/derby-jade/issues"
+    "url": "git://github.com/derbyparty/derby-jade/issues"
   },
   "main": "./derby_adapter.js",
   "bin": {
