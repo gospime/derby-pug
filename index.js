@@ -92,7 +92,7 @@ function compiler(file, fileName) {
           .replace(/<_derby_/g, '<')
           .replace(/<\/_derby_/g, '<\/')
           // Add colons
-          .replace(/^\s*(<([\w-]+))((?:\b[^>]+)?>)\n?([\s\S]*?)\n?<\/\2>$/, function (template, left, name, right, content) {
+          .replace(/^\s*(<([\w-:]+))((?:\b[^>]+)?>)\n?([\s\S]*?)\n?<\/\2>$/, function (template, left, name, right, content) {
             return left + ':' + right + (content ? '\n' + content : '');
           })
           // Add scripts
@@ -183,9 +183,10 @@ function compiler(file, fileName) {
       renderBlock();
       // Remove colons after Derby tags
       // it makes colons optional
-      statement = statement.replace(/^([^(]*):/, function(statement, tag) {
-        return tag;
+      statement = statement.replace(/:([\n\s(])/, function(statement, symbol) {
+        return symbol;
       });
+      statement = statement.replace(/:$/, '');
       // We add underscore to avoid problems when Derby tag name
       // is same as non closing tags
       statement = '_derby_' + statement;
