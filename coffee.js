@@ -2,6 +2,7 @@ var coffeeScript = require("coffee-script");
 
 module.exports = function (js) {
   if (!js) return '';
+  if (js === 'delete()') return js;
   var original = js;
   // Exclude Derby block alias
   var alias;
