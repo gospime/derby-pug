@@ -1,27 +1,31 @@
-# Jade static compiler for Derby.js
+# Derby-Jade
 
-Jade fork for derby.js templates compilation (not the actual Derby.js template engine).
-## [Jade documentation](https://github.com/visionmedia/jade)
+- Jade compiler for Derby
+- Derby 0.6 version is the only supported (for previous Derby use 0.5 branch)
+- Supports derby-specific tags that ends with `:` and makes `if, else, else if, unless, with, each` compile into derby View-variables
+- Colons after derby-specific tags are optional
+- process.env.DEBUG = 'derby-jade'; enables debug info
+- Coffeescript support
 
-Supports derby-specific tags that ends with `:` and makes `if, else, else if, unless, with, each` compile into derby View-variables.
+## Known Issues
+- Line numbers in Jade errors can be wrong, because we compile file by parts
+- If you on Coffescript, use this.contextfield or @.contextfield to access context and @fieldname to access component fields as in original Derby syntax
 
-## Usage
-
-Right after creating your Derby app, add:
-
+### Installation
+```
+npm install derby-jade
+```
+### Setting
 ```js
-// Add Jade compilation support
 app.serverUse(module, 'derby-jade');
+// before app.loadViews();
 ```
 
-Make sure this is before any calls to `app.loadViews()`.
-
-## Coffeescript
+### Coffeescript
 
 If you want to use Coffeescript instead of Javascript in templates:
 
 ```js
-// Add Jade compilation support
 app.serverUse(module, 'derby-jade', {coffee: true});
 ```
 Then you can do something like this:
@@ -29,7 +33,11 @@ Then you can do something like this:
 if a and b
   p 
     a(on-click="console.log c or 'log'") {{d or 'Click Me'}}
+  script.
+    here = canbe + coffee and script
 ```
+
+### Usage
 
 ## Derby.js-specific syntax
 
@@ -76,7 +84,7 @@ else
     {{/}}
     {{if #flash.info}}
         <ul class="alert alert-success">
-            {{#each #flash.info as #info}}
+            {{each #flash.info as #info}}
                 <li>{{#info}}</li>
             {{/}}
         </ul>
@@ -90,19 +98,19 @@ else
 
 ```jade
 import:(src='./auth', ns='')
-import:(src='./games')
+import(src='./games')
 
 Title:
   | My cool app
 
-Body:
+Body
   view(name='welcome', title='Welcome {{_session.username}}')
     p We are glad to see you!
 
 Footer:
   view(name='copyright')
 
-welcome:
+welcome
   h1 {{@title}}
   | {{@content}}
 
@@ -110,20 +118,146 @@ copyright:
   p Use it however you want {{_session.username}}!
 ```
 
-## Installation
 
-```bash
-$ cd /path/to/project/
-$ npm install git://github.com/cray0000/derby-jade.git --save-dev
+## Jade + Js
+```jade
+import(src='./home', ns='home')
+import:(src='./about')
+
+Body:
+  each _page.users as #user
+    if #user && #user.id
+      a(on-click='click(#user && #user.id)') {{#user && #user.name}}
+    else if #user || #user.id
+      p {{#user.id}}
+    else
+      p nothing
+    view(name='{{#user.id || #user.name}}')
+    p {{unescaped #user.name}}
+
+  p
+    script.
+      window.scrollTo(0 || 1, 0 && 1)
+    //script.
+      window.location = window.location
+    p
+      script.
+        history.go(-2)
+      // p bla-bla
+  script history.go(2)
+  script(src='/script.js')
+  script.
+    history.go(1)
+
+component
+  p {{@name}}
+  if _page.name || @name && this.field
+    div {{show(@name)}}
+  script.
+    history.go(0)
+
+input
+  p a
+
+index:
+  layout:body
+    view(name="matches-you-liked")
+
+matches-you-liked:
+  h1 Matches you liked
 ```
 
-Can be used in conjunction with task-runners like [grunt-contrib-jade](https://github.com/cray0000/grunt-contrib-jade) or directly by calling for example:
+## Jade + Coffee
+```jade
+import(src='./home', ns='home')
+import:(src='./about')
 
-```bash
-$ ./node_modules/.bin/jade -w ./jade/ --out ./views/**/
+Body:
+  each _page.users as #user
+    if #user and #user.id
+      a(on-click='click #user and #user.id') {{#user and #user.name}}
+    else if #user or #user.id
+      p {{#user.id}}
+    else
+      p nothing
+    view(name='{{#user.id or #user.name}}')
+    p {{unescaped #user.name}}
+
+  p
+    script.
+      window.scrollTo 0 or 1, 0 and 1
+    //script.
+      window.location = window.location
+    p
+      script.
+        history.go -2
+      // p bla-bla
+  script history.go 2
+  script(src='/script.js')
+  script.
+    history.go 1
+
+component
+  p {{@name}}
+  if _page.name or @name and @.field
+    div {{show @name}}
+  script.
+    history.go 0
+
+input
+  p a
+
+index:
+  layout:body
+    view(name="matches-you-liked")
+
+matches-you-liked:
+  h1 Matches you liked
 ```
 
-## Screenshot
-![Screenshot of Webstorm](https://raw.github.com/cray0000/jade/master/bin/derby-jade.png "Screenshot of Webstorm")
-
-
+## Result
+```html
+<import: src="./home" ns="home">
+<import: src="./about">
+<Body:>
+  {{each _page.users as #user}}
+    {{if #user && #user.id}}<a on-click="click(#user && #user.id)">{{#user && #user.name}}</a>    {{else if #user || #user.id}}
+      <p>{{#user.id}}</p>
+    {{else}}
+      <p>nothing</p>
+    {{/}}
+    <view name="{{#user.id || #user.name}}"></view>
+    <p>{{unescaped #user.name}}</p>
+  {{/}}
+  <p>
+    <script>
+      window.scrollTo(0 || 1, 0 && 1)
+    </script>
+    <p>
+      <script>
+        history.go(-2)
+      </script>
+    </p>
+  </p>
+  <script>history.go(2)</script>
+  <script src="/script.js"></script>
+  <script>
+    history.go(1)
+  </script>
+<component:>
+  <p>{{@name}}</p>
+  {{if _page.name || @name && this.field}}
+    <div>{{show(@name)}}</div>
+  {{/}}
+  <script>
+    history.go(0)
+  </script>
+<input:>
+  <p>a</p>
+<index:>
+  <layout:body>
+    <view name="matches-you-liked"></view>
+  </layout:body>
+<matches-you-liked:>
+  <h1>Matches you liked</h1>
+```
