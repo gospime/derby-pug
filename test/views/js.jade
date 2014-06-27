@@ -4,7 +4,7 @@ import:(src='./about')
 Body:
   each _page.users as #user
     if #user && #user.id
-      a(on-click='click(#user && #user.id)') {{#user && #user.name}}
+      a(on-click="click(#user && #user.id || get('_page.name'))") {{#user && #user.name}}
     else if #user || #user.id
       p {{#user.id}}
     else

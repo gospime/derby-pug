@@ -2,7 +2,7 @@
 <import: src="./about">
 <Body:>
   {{each _page.users as #user}}
-    {{if #user && #user.id}}<a on-click="click(#user && #user.id)">{{#user && #user.name}}</a>    {{else if #user || #user.id}}
+    {{if #user && #user.id}}<a on-click="click(#user && #user.id || get('_page.name'))">{{#user && #user.name}}</a>    {{else if #user || #user.id}}
       <p>{{#user.id}}</p>
     {{else}}
       <p>nothing</p>
