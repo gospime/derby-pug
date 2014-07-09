@@ -5,8 +5,8 @@ var debug = require('debug')('derby-jade');
 var options;
 var defaultIndent = 2;
 //process.platform = 'win32';
-var newLine = process.platform === 'win32' ? '\r\n' : '\n';
-var regNewLine = process.platform === 'win32' ? '\\r\\n' : '\\n';
+var newLine = '\n';
+var regNewLine = '\\n';
 
 function r(pattern, modifiers) {
   return new RegExp(pattern, modifiers);
@@ -76,7 +76,7 @@ function postprocess(html) {
 
 function compiler(file, fileName) {
   var out = [];
-  var lines = file.split(newLine);
+  var lines = file.replace(/\r\n/g, newLine).split(newLine);
   var lastComment = Infinity;
   var lastScript = Infinity;
   var script = [];
