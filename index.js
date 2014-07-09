@@ -4,6 +4,13 @@ var coffee = require('./coffee');
 var debug = require('debug')('derby-jade');
 var options;
 var defaultIndent = 2;
+//process.platform = 'win32';
+var newLine = process.platform === 'win32' ? '\r\n' : '\n';
+var regNewLine = process.platform === 'win32' ? '\\r\\n' : '\\n';
+
+function r(pattern, modifiers) {
+  return new RegExp(pattern, modifiers);
+}
 
 module.exports = function (app, opts) {
   options = opts || {};
@@ -56,7 +63,8 @@ function preprocess(source) {
 function postprocess(html) {
   return html
     // Clean redundant Derby statements
-    .replace(/[ \t]*<\/__derby-statement>\n?(?=\s+<__derby-statement type="else([ \t]+if)?")/g, '')
+    //.replace(/[ \t]*<\/__derby-statement>\n?(?=\s+<__derby-statement type="else([ \t]+if)?")/g, '')
+    .replace(r('[ \\t]*<\\/__derby-statement>' + regNewLine + '?(?=\\s+<__derby-statement type="else([ \\t]+if)?")', 'g'), '')
     // Replace Derby statements back
     .replace(/<__derby-statement type="([^"]+)"(?: value="([^"]+)")?>/gm, function (statement, type, value) {
       if (value === '%20') value = '';
@@ -68,7 +76,7 @@ function postprocess(html) {
 
 function compiler(file, fileName) {
   var out = [];
-  var lines = file.split('\n');
+  var lines = file.split(newLine);
   var lastComment = Infinity;
   var lastScript = Infinity;
   var script = [];
@@ -79,7 +87,7 @@ function compiler(file, fileName) {
   function renderBlock() {
     if (block.length) {
       debugString += ', block end';
-      var source = preprocess(block.join('\n'));
+      var source = preprocess(block.join(newLine));
       block = [];
       var jadeOptions = {
         filename: fileName,
@@ -88,17 +96,22 @@ function compiler(file, fileName) {
       jade.render(source, jadeOptions, function (error, html) {
         if (error) throw error;
         html = html
+          .replace(/\n/g, newLine)
           // Remove underscores
           .replace(/<_derby_/g, '<')
           .replace(/<\/_derby_/g, '<\/')
           // Add colons
-          .replace(/^\s*(<([\w-:]+))((?:\b[^>]+)?>)\n?([\s\S]*?)\n?<\/\2>$/, function (template, left, name, right, content) {
-            return left + ':' + right + (content ? '\n' + content : '');
+          //.replace(/^\s*(<([\w-:]+))((?:\b[^>]+)?>)\n?([\s\S]*?)\n?<\/\2>$/, function (template, left, name, right, content) {
+          //  return left + ':' + right + (content ? newLine + content : '');
+          //})
+          .replace(r('^\\s*(<([\\w-:]+))((?:\\b[^>]+)?>)(?:' + regNewLine + ')?([\\s\\S]*?)(?:' + regNewLine + ')?<\\/\\2>$'), function (template, left, name, right, content) {
+            return left + ':' + right + (content ? newLine + content : '');
           })
           // Add scripts
           .replace(/<script(\d*)><\/script\1>/g, function(statement, index) {
             return scripts[index];
-          });
+          })
+          .replace(/\r$/g, '');
         out.push(postprocess(html));
       });
     }
@@ -106,15 +119,15 @@ function compiler(file, fileName) {
 
   function closeScript() {
     if (script.length) {
-      var source = script.join('\n');
+      var source = script.join(newLine);
       if (options.coffee) source = coffee(source);
       script = [];
       var scriptSource = '<script>';
-      source.split('\n').forEach(function (scriptLine) {
+      source.split(newLine).forEach(function (scriptLine) {
         scriptLine = scriptLine.replace(/^\s*/g, '');
-        scriptSource += '\n' + addindent(scriptLine, lastScript + defaultIndent);
+        scriptSource += newLine + addindent(scriptLine, lastScript + defaultIndent);
       });
-      scriptSource += '\n' + addindent('</script>', lastScript);
+      scriptSource += newLine + addindent('</script>', lastScript);
       scripts.push(scriptSource);
       block.push(addindent('script' + (scripts.length - 1), lastScript));
     }
@@ -202,5 +215,5 @@ function compiler(file, fileName) {
   closeScript();
   renderBlock();
 
-  return out.join('\n');
+  return out.join(newLine);
 }
