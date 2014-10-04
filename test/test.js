@@ -45,6 +45,17 @@ describe("Jade compiler", function() {
         __dirname + "/jadeFeatures/block/index.jade"), html);
   });
 
+  it("should pass tricky case", function() {
+    dJade(app);
+    var compiler = app.compilers[".jade"];
+    var jade = fs.readFileSync(__dirname
+      + "/jadeFeatures/advanced/index.jade", "utf8");
+    var html = fs.readFileSync(__dirname
+      + "/jadeFeatures/advanced/result.html", "utf8");
+    assert.equal(compiler(jade,
+        __dirname + "/jadeFeatures/advanced/index.jade"), html);
+  });
+
   it.skip("should extend file with <script> in it", function() {
     dJade(app);
     var compiler = app.compilers[".jade"];

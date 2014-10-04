@@ -101,17 +101,25 @@ function compiler(file, fileName, preprocessOnly) {
         if (error) throw error;
         html = html
           .replace(/\n/g, newLine)
-          // Remove underscores
-          .replace(/<_derby_/g, '<')
-          .replace(/<\/_derby_/g, '<\/')
           // Add colons
           //.replace(/^\s*(<([\w-:]+))((?:\b[^>]+)?>)\n?([\s\S]*?)\n?<\/\2>$/, function (template, left, name, right, content) {
           //  return left + ':' + right + (content ? newLine + content : '');
           //})
-          .replace(r('\\s*(<([\\w-:]+))((?:\\b[^>]+)?>)(?:(?:' + regNewLine + ')?([\\s\\S]*?)(?:' + regNewLine + ')|([\\s\\S]*?))<\\/\\2>', 'g'), function (template, left, name, right, content, offset, string) {
+          .replace(r('\\s*(<([\\w-:]+))((?:\\b[^>]+)?>)(?:' + regNewLine + ')?([\\s\\S]*?)(?:' + regNewLine + ')?<\\/\\2>', 'g'), function (template, left, name, right, content, offset, string) {
+//            console.log('-----------> HAS');
+//            console.log(template);
+//            console.log('-------> LEFT');
+//            console.log(left);
+//            console.log('-------> RIGHT');
+//            console.log(right);
+//            console.log('-------> CONTENT');
+//            console.log(content);
             return left + ':' + right + (content ? newLine + content : '')
               + ((offset + template.length === string.length) ? '' : newLine);
           })
+          // Remove underscores
+          .replace(/<_derby_/g, '<')
+          .replace(/<\/_derby_/g, '<\/')
           // Add scripts
           .replace(/<script(\d*)><\/script\1>/g, function(statement, index) {
             return scripts[index];
