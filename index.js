@@ -1,5 +1,9 @@
 var jade  = require('jade');
 var coffee = require('./coffee');
+var crypto = require('crypto');
+var path = require('path');
+var fs = require('fs');
+var os = require('os');
 //process.env.DEBUG = 'derby-jade';
 var debug = require('debug')('derby-jade');
 var options;
@@ -36,7 +40,7 @@ function preprocess(source) {
         if (options.coffee) {
           expression = ' ' + coffee(expression);
         }
-        return indentation + '__derby-statement(type=\"' + type + '\"' + 
+        return indentation + '__derby-statement(type=\"' + type + '\"' +
           (expression ? ' value=\"' + escape(expression) + '\"' : '') + ')';
     })
     // This is needed for coffee
@@ -74,7 +78,7 @@ function postprocess(html) {
     .replace(/<\/__derby-statement>/g, '{{/}}');
 }
 
-function compiler(file, fileName) {
+function compiler(file, fileName, preprocessOnly) {
   var out = [];
   var lines = file.replace(/\r\n/g, newLine).split(newLine);
   var lastComment = Infinity;
@@ -104,8 +108,9 @@ function compiler(file, fileName) {
           //.replace(/^\s*(<([\w-:]+))((?:\b[^>]+)?>)\n?([\s\S]*?)\n?<\/\2>$/, function (template, left, name, right, content) {
           //  return left + ':' + right + (content ? newLine + content : '');
           //})
-          .replace(r('^\\s*(<([\\w-:]+))((?:\\b[^>]+)?>)(?:' + regNewLine + ')?([\\s\\S]*?)(?:' + regNewLine + ')?<\\/\\2>$'), function (template, left, name, right, content) {
-            return left + ':' + right + (content ? newLine + content : '');
+          .replace(r('\\s*(<([\\w-:]+))((?:\\b[^>]+)?>)(?:' + regNewLine + ')?([\\s\\S]*?)(?:' + regNewLine + ')?<\\/\\2>', 'g'), function (template, left, name, right, content, offset, string) {
+            return left + ':' + right + (content ? newLine + content : '')
+              + ((offset + template.length === string.length) ? '' : newLine);
           })
           // Add scripts
           .replace(/<script(\d*)><\/script\1>/g, function(statement, index) {
@@ -114,6 +119,15 @@ function compiler(file, fileName) {
           .replace(/\r$/g, '');
         out.push(postprocess(html));
       });
+    }
+  }
+
+  function renderPreprocessBlock() {
+    if (block.length) {
+      debugString += ', block end';
+      var source = preprocess(block.join(newLine));
+      block = [];
+      out.push(source);
     }
   }
 
@@ -135,6 +149,7 @@ function compiler(file, fileName) {
 
   for (var i = 0; i < lines.length; i++) {
     var line = lines[i];
+    var extendMatch, extendFileName, extendFile, extendTempFileName;
 
     var res = /^(\s*)(.*?)$/g.exec(line);
     var spaces = res[1];
@@ -189,11 +204,41 @@ function compiler(file, fileName) {
       continue;
     }
 
+    // Jade's "extends" and "include"
+    // We have to compile the source file into a temporary one
+    if ((indent === 0) && (
+        extendMatch = statement.match(/^(extends|include) (\S+)/))) {
+      extendFileName = path.resolve(path.dirname(fileName), extendMatch[2]);
+      extendFileName = extendFileName.replace(/\.jade\s*$/, '') + '.jade';
+      extendFile = fs.readFileSync(extendFileName, { encoding: 'utf8' });
+      extendFile = compiler(extendFile, extendFileName, true);
+      extendTempFileName = path.join( os.tmpdir(),
+        crypto.createHash('md5').update(extendFileName).digest('hex')+ '.jade');
+      fs.writeFileSync(extendTempFileName, extendFile);
+      block.push( extendMatch[1] + ' '
+        + path.relative(fileName, extendTempFileName) );
+      debug(debugString + ', jade extends');
+      continue;
+    }
+
+    // Other Jade reserved keywords
+    // Simply pass any preprocessing of them
+    if (indent === 0 &&
+        /^(\+|mixin|block|prepend|append)/.test(statement)) {
+      block.push(line);
+      debug(debugString + ', jade reserved');
+      continue;
+    }
+
     if (indent === 0) {
       // Derby tag
       // It means that we are going to start another block,
       // so we should render last one first
-      renderBlock();
+      if (preprocessOnly) {
+        renderPreprocessBlock();
+      } else {
+        renderBlock();
+      }
       // Remove colons after Derby tags
       // it makes colons optional
       statement = statement.replace(/:([\n\s(])/, function(statement, symbol) {
@@ -213,7 +258,11 @@ function compiler(file, fileName) {
   }
   // Close script if exist and render block
   closeScript();
-  renderBlock();
+  if (preprocessOnly) {
+    renderPreprocessBlock();
+  } else {
+    renderBlock();
+  }
 
   return out.join(newLine);
 }
