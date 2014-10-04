@@ -1,7 +1,7 @@
 index:
   p Hello World
 
-menu:
+menu:(attributes='player', arrays='button/buttons')
   ul
     li(on-click='goToOne()') One
     block two
@@ -14,3 +14,4 @@ topbar:
   .topbar
     block topbar-menu
       view(name='menu')
+  h3 End of topbar
