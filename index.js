@@ -108,7 +108,7 @@ function compiler(file, fileName, preprocessOnly) {
           //.replace(/^\s*(<([\w-:]+))((?:\b[^>]+)?>)\n?([\s\S]*?)\n?<\/\2>$/, function (template, left, name, right, content) {
           //  return left + ':' + right + (content ? newLine + content : '');
           //})
-          .replace(r('\\s*(<([\\w-:]+))((?:\\b[^>]+)?>)(?:' + regNewLine + ')?([\\s\\S]*?)(?:' + regNewLine + ')?<\\/\\2>', 'g'), function (template, left, name, right, content, offset, string) {
+          .replace(r('\\s*(<([\\w-:]+))((?:\\b[^>]+)?>)(?:(?:' + regNewLine + ')([\\s\\S]*?)(?:' + regNewLine + ')|([\\s\\S]*?))<\\/\\2>', 'g'), function (template, left, name, right, content, offset, string) {
             return left + ':' + right + (content ? newLine + content : '')
               + ((offset + template.length === string.length) ? '' : newLine);
           })

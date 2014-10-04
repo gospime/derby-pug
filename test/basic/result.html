@@ -1,5 +1,7 @@
 <import: src="./home" ns="home">
+
 <import: src="./about">
+
 <Body:>
   {{each _page.users as #user}}
     {{if #user && #user.id}}<a on-click="click(#user && #user.id || get('_page.name'))">{{#user && #user.name}}</a>    {{else if #user || #user.id}}
@@ -25,6 +27,7 @@
   <script>
     history.go(1)
   </script>
+
 <component:>
   <p>{{@name}}</p>
   {{if _page.name || @name && this.field}}
@@ -33,22 +36,26 @@
   <script>
     history.go(0)
   </script>
+
 <input:>
   <p>a</p>
+
 <index:>
   <layout:body>
     <view name="matches-you-liked"></view>
   </layout:body>
+
 <matches-you-liked:>
   <h1>Matches you liked</h1>
+
 <some:tag:>
   <p on-click="delete()">a</p>
+
 <some:tag2:>
   <p on-click="delete()">a</p>
   <script>
-    var location;
-    
-    if (location) {
-    location = location;
+    if (window.location = 'NY') {
+    window.hello = 'World';
+    window.location = window.location;
     }
   </script>

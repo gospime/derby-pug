@@ -1,0 +1,16 @@
+index:
+  p Hello World
+
+menu:
+  ul
+    li(on-click='goToOne()') One
+    block two
+      li Two
+    li Three
+  .ping
+    h2 Pong
+
+topbar:
+  .topbar
+    block topbar-menu
+      view(name='menu')

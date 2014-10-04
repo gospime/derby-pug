@@ -6,8 +6,8 @@ var app = {
 }
 var dJade = require("../");
 
-describe("test", function() {
-  it("jade + js", function() {
+describe("Jade compiler", function() {
+  it("should compile Derby.js stuff", function() {
     dJade(app);
     var compiler = app.compilers[".jade"];
     var jade = fs.readFileSync(__dirname + "/basic/js.jade", "utf8");
@@ -15,11 +15,45 @@ describe("test", function() {
     assert.equal(compiler(jade, __dirname + "/basic/js.jade"), html);
   });
 
-  it("jade + coffee", function() {
+  it("should compile coffee in <script> when 'coffee' option is on", function() {
     dJade(app, {coffee: true});
     var compiler = app.compilers[".jade"];
     var jade = fs.readFileSync(__dirname + "/basic/coffee.jade", "utf8");
     var html = fs.readFileSync(__dirname + "/basic/result.html", "utf8");
     assert.equal(compiler(jade, __dirname + "/basic/coffee.jade"), html);
   });
+
+  it("should do basic extend of a file", function() {
+    dJade(app);
+    var compiler = app.compilers[".jade"];
+    var jade = fs.readFileSync(__dirname
+      + "/jadeFeatures/basicExtends/index.jade", "utf8");
+    var html = fs.readFileSync(__dirname
+      + "/jadeFeatures/basicExtends/result.html", "utf8");
+    assert.equal(compiler(jade,
+        __dirname + "/jadeFeatures/basicExtends/index.jade"), html);
+  });
+
+  it("should support 'block' when extends", function() {
+    dJade(app);
+    var compiler = app.compilers[".jade"];
+    var jade = fs.readFileSync(__dirname
+      + "/jadeFeatures/block/index.jade", "utf8");
+    var html = fs.readFileSync(__dirname
+      + "/jadeFeatures/block/result.html", "utf8");
+    assert.equal(compiler(jade,
+        __dirname + "/jadeFeatures/block/index.jade"), html);
+  });
+
+  it.skip("should extend file with <script> in it", function() {
+    dJade(app);
+    var compiler = app.compilers[".jade"];
+    var jade = fs.readFileSync(__dirname
+      + "/jadeFeatures/scriptExtends/index.jade", "utf8");
+    var html = fs.readFileSync(__dirname
+      + "/basic/result.html", "utf8");
+    assert.equal(compiler(jade,
+        __dirname + "/jadeFeatures/scriptExtends/index.jade"), html);
+  });
+
 });
