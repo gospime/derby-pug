@@ -67,7 +67,7 @@ describe("Jade compiler", function() {
         __dirname + "/jadeFeatures/scriptExtends/index.jade"), html);
   });
 
-  it("should compile '&' into element name of component when 'bem' option is on", function() {
+  it("should support BEM shorthand: compile '&' into element name of component", function() {
     dJade(app);
     var compiler = app.compilers[".jade"];
     var jade = fs.readFileSync(__dirname + "/extra/bem/index.jade", "utf8");
