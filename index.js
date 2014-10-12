@@ -83,6 +83,7 @@ function compiler(file, fileName, preprocessOnly) {
   var lines = file.replace(/\r\n/g, newLine).split(newLine);
   var lastComment = Infinity;
   var lastScript = Infinity;
+  var lastElement = null;
   var script = [];
   var scripts = [];
   var block = [];
@@ -157,6 +158,7 @@ function compiler(file, fileName, preprocessOnly) {
 
   for (var i = 0; i < lines.length; i++) {
     var line = lines[i];
+    var oldLine;
     var extendMatch, extendFileName, extendFile, extendTempFileName;
 
     var res = /^(\s*)(.*?)$/g.exec(line);
@@ -238,6 +240,12 @@ function compiler(file, fileName, preprocessOnly) {
       continue;
     }
 
+    // BEM-elements
+    if (indent === 0) {
+      lastElement = statement.match(/element=['"]([^'"]*)['"]/);
+      lastElement && (lastElement = lastElement[1])
+    }
+
     if (indent === 0) {
       // Derby tag
       // It means that we are going to start another block,
@@ -260,6 +268,15 @@ function compiler(file, fileName, preprocessOnly) {
       block.push(statement);
     } else {
       debugString += ', block';
+
+      // BEM replacement
+      if (lastElement) {
+        do {
+          line = line.replace(/(^\s*[\w\.#-]*\.)(&)/, '$1' + lastElement);
+          oldLine = line
+        } while (line !== oldLine);
+      }
+
       block.push(line);
     }
     debug(debugString);

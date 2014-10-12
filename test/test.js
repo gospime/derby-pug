@@ -67,4 +67,12 @@ describe("Jade compiler", function() {
         __dirname + "/jadeFeatures/scriptExtends/index.jade"), html);
   });
 
+  it("should compile '&' into element name of component when 'bem' option is on", function() {
+    dJade(app);
+    var compiler = app.compilers[".jade"];
+    var jade = fs.readFileSync(__dirname + "/extra/bem/index.jade", "utf8");
+    var html = fs.readFileSync(__dirname + "/extra/bem/result.html", "utf8");
+    assert.equal(compiler(jade, __dirname + "/extra/bem/index.jade"), html);
+  });
+
 });

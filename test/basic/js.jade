@@ -26,7 +26,7 @@ Body:
   script.
     history.go(1)
 
-component
+component(element='component')
   p {{@name}}
   if _page.name || @name && this.field
     div {{show(@name)}}
