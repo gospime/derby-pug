@@ -242,7 +242,8 @@ function compiler(file, fileName, preprocessOnly) {
 
     // BEM-elements
     if (indent === 0) {
-      lastElement = statement.match(/element=['"]([^'"]*)['"]/);
+      lastElement = statement.match(/[ ,\(]bem=['"]([^'"]*)['"]/);
+      lastElement = lastElement || statement.match(/[ ,\(]element=['"]([^'"]*)['"]/);
       lastElement && (lastElement = lastElement[1])
     }
 
