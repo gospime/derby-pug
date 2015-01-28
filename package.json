@@ -15,7 +15,7 @@
   },
   "main": "index.js",
   "bin": {
-    "jade": "./bin/derby-jade.js"
+    "derby-jade": "./bin/derby-jade.js"
   },
   "dependencies": {
     "jade": "~1.3.1",
