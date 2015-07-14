@@ -274,7 +274,7 @@ function compiler(file, fileName, preprocessOnly, jadeOptions) {
           _componentName = path.basename( path.dirname(fileName) );
         }
         line = line.replace(/(\.)([a-z][\w_-]+)/g, function(match, p1, p2, offset, string){
-          if (/^\s*\S+\s/.test( string.substr(0, offset) )) {
+          if (/^\s*[^\s\(]+[\s\(]/.test( string.substr(0, offset) )) {
             return match;
           } else {
             return p1 + _componentName + '-' + p2;
