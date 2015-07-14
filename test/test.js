@@ -75,4 +75,13 @@ describe("Jade compiler", function() {
     assert.equal(compiler(jade, __dirname + "/extra/bem/index.jade"), html);
   });
 
+  it("should support module mode", function() {
+    dJade(app, {globals: {moduleMode: true}});
+    var compiler = app.compilers[".jade"];
+    var jade = fs.readFileSync(__dirname + "/extra/module/index.jade", "utf8");
+    var html = fs.readFileSync(__dirname + "/extra/module/result.html", "utf8");
+    assert.equal(compiler(jade, __dirname + "/extra/module/index.jade"), html);
+  });
+
+
 });

@@ -16,11 +16,13 @@ function r(pattern, modifiers) {
   return new RegExp(pattern, modifiers);
 }
 
-module.exports = function (app, opts) {
+module.exports = exports = function (app, opts) {
   options = opts || {};
   app.viewExtensions.push('.jade');
   app.compilers['.jade'] = compiler;
 };
+
+exports.compiler = compiler;
 
 function addindent(source, count) {
   if (count === undefined) count = defaultIndent;
@@ -64,8 +66,21 @@ function preprocess(source) {
     });
 }
 
-function postprocess(html) {
+function postprocess(html, scripts) {
   return html
+    .replace(/\n/g, newLine)
+    .replace(r('\\s*(<([\\w-:]+))((?:\\b[^>]+)?>)(?:' + regNewLine + ')?([\\s\\S]*?)(?:' + regNewLine + ')?<\\/\\2>', 'g'), function (template, left, name, right, content, offset, string) {
+      return left + ':' + right + (content ? newLine + content : '')
+        + ((offset + template.length === string.length) ? '' : newLine);
+    })
+    // Remove underscores
+    .replace(/<_derby_/g, '<')
+    .replace(/<\/_derby_/g, '<\/')
+    // Add scripts
+    .replace(/<script(\d*)><\/script\1>/g, function(statement, index) {
+      return scripts[index];
+    })
+    .replace(/\r$/g, '')
     // Clean redundant Derby statements
     //.replace(/[ \t]*<\/__derby-statement>\n?(?=\s+<__derby-statement type="else([ \t]+if)?")/g, '')
     .replace(r('[ \\t]*<\\/__derby-statement>' + regNewLine + '?(?=\\s+<__derby-statement type="else([ \\t]+if)?")', 'g'), '')
@@ -78,7 +93,7 @@ function postprocess(html) {
     .replace(/<\/__derby-statement>/g, '{{/}}');
 }
 
-function compiler(file, fileName, preprocessOnly) {
+function compiler(file, fileName, preprocessOnly, jadeOptions) {
   var out = [];
   var lines = file.replace(/\r\n/g, newLine).split(newLine);
   var lastComment = Infinity;
@@ -88,45 +103,18 @@ function compiler(file, fileName, preprocessOnly) {
   var scripts = [];
   var block = [];
   var debugString;
+  jadeOptions = jadeOptions || options.globals || {};
 
   function renderBlock() {
     if (block.length) {
       debugString += ', block end';
       var source = preprocess(block.join(newLine));
       block = [];
-      var jadeOptions = {
-        filename: fileName,
-        pretty: true
-      }
+      jadeOptions.filename = fileName;
+      jadeOptions.pretty = true;
       jade.render(source, jadeOptions, function (error, html) {
         if (error) throw error;
-        html = html
-          .replace(/\n/g, newLine)
-          // Add colons
-          //.replace(/^\s*(<([\w-:]+))((?:\b[^>]+)?>)\n?([\s\S]*?)\n?<\/\2>$/, function (template, left, name, right, content) {
-          //  return left + ':' + right + (content ? newLine + content : '');
-          //})
-          .replace(r('\\s*(<([\\w-:]+))((?:\\b[^>]+)?>)(?:' + regNewLine + ')?([\\s\\S]*?)(?:' + regNewLine + ')?<\\/\\2>', 'g'), function (template, left, name, right, content, offset, string) {
-//            console.log('-----------> HAS');
-//            console.log(template);
-//            console.log('-------> LEFT');
-//            console.log(left);
-//            console.log('-------> RIGHT');
-//            console.log(right);
-//            console.log('-------> CONTENT');
-//            console.log(content);
-            return left + ':' + right + (content ? newLine + content : '')
-              + ((offset + template.length === string.length) ? '' : newLine);
-          })
-          // Remove underscores
-          .replace(/<_derby_/g, '<')
-          .replace(/<\/_derby_/g, '<\/')
-          // Add scripts
-          .replace(/<script(\d*)><\/script\1>/g, function(statement, index) {
-            return scripts[index];
-          })
-          .replace(/\r$/g, '');
-        out.push(postprocess(html));
+        out.push(postprocess(html, scripts));
       });
     }
   }
@@ -273,9 +261,25 @@ function compiler(file, fileName, preprocessOnly) {
       // BEM replacement
       if (lastElement) {
         do {
+          oldLine = line;
           line = line.replace(/(^\s*[\w\.#-]*\.)(&)/, '$1' + lastElement);
-          oldLine = line
         } while (line !== oldLine);
+      }
+
+      // Module mode for Jade (for usage with Webpack and custom css-loader)
+      // Ref: https://github.com/dmapper/style-guide/blob/master/stylus.md
+      if (( jadeOptions.moduleMode || options.moduleMode) && fileName) {
+        var _componentName = path.basename(fileName, path.extname(fileName));
+        if (_componentName === 'index') {
+          _componentName = path.basename( path.dirname(fileName) );
+        }
+        line = line.replace(/(\.)([a-z][\w_-]+)/g, function(match, p1, p2, offset, string){
+          if (/^\s*\S+\s/.test( string.substr(0, offset) )) {
+            return match;
+          } else {
+            return p1 + _componentName + '-' + p2;
+          }
+        });
       }
 
       block.push(line);
