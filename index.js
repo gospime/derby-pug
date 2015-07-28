@@ -273,11 +273,16 @@ function compiler(file, fileName, preprocessOnly, jadeOptions) {
         if (_componentName === 'index') {
           _componentName = path.basename( path.dirname(fileName) );
         }
-        line = line.replace(/(\.)([a-z][\w_-]+)/g, function(match, p1, p2, offset, string){
+        line = line.replace(/(\.)([a-z][\w_-]+)/g, function(match, dot, localName, offset, string){
+          // Check that it's a class (the dot is before any parenthesis)
           if (/^\s*[^\s\(]+[\s\(]/.test( string.substr(0, offset) )) {
             return match;
           } else {
-            return p1 + _componentName + '-' + p2;
+            if (localName === 'root') {
+              return dot + _componentName;
+            } else {
+              return dot + _componentName + '-' + localName;
+            }
           }
         });
       }
