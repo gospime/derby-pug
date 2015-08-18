@@ -275,14 +275,14 @@ function compiler(file, fileName, preprocessOnly, jadeOptions) {
         }
         line = line.replace(/(\.)([a-z][\w_-]+)/g, function(match, dot, localName, offset, string){
           // Check that it's a class (the dot is before any parenthesis)
-          if (/^\s*[^\s\(]+[\s\(]/.test( string.substr(0, offset) )) {
-            return match;
-          } else {
+          if (/^\s*[\w\.#-]*$/.test( string.substr(0, offset) )) {
             if (localName === 'root') {
               return dot + _componentName;
             } else {
               return dot + _componentName + '-' + localName;
             }
+          } else {
+            return match
           }
         });
       }
