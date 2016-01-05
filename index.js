@@ -209,7 +209,7 @@ function compiler(file, fileName, preprocessOnly, jadeOptions) {
       extendFileName = path.resolve(path.dirname(fileName), extendMatch[2]);
       extendFileName = extendFileName.replace(/\.jade\s*$/, '') + '.jade';
       extendFile = fs.readFileSync(extendFileName, { encoding: 'utf8' });
-      extendFile = compiler(extendFile, extendFileName, true);
+      extendFile = compiler(extendFile, extendFileName, true, jadeOptions);
       extendTempFileName = path.join( os.tmpdir(),
         crypto.createHash('md5').update(extendFileName).digest('hex')+ '.jade');
       fs.writeFileSync(extendTempFileName, extendFile);
