@@ -6,7 +6,7 @@ var fs = require('fs');
 var os = require('os');
 //process.env.DEBUG = 'derby-jade';
 var debug = require('debug')('derby-jade');
-var options;
+var options = {};
 var defaultIndent = 2;
 //process.platform = 'win32';
 var newLine = '\n';
