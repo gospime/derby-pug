@@ -1,4 +1,5 @@
 # Derby-Pug
+Forked from [derby-jade](https://github.com/derbyparty/derby-jade)
 
 - Pug compiler for Derby
 - Derby 0.6 version is the only supported (for previous Derby use 0.5 branch)
