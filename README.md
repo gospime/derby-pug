@@ -1,23 +1,23 @@
-# Derby-Jade
+# Derby-Pug
 
-- Jade compiler for Derby
+- Pug compiler for Derby
 - Derby 0.6 version is the only supported (for previous Derby use 0.5 branch)
 - Supports derby-specific tags that ends with `:` and makes `if, else, else if, unless, with, each` compile into derby View-variables
 - Colons after derby-specific tags are optional
-- process.env.DEBUG = 'derby-jade'; enables debug info
+- process.env.DEBUG = 'derby-pug'; enables debug info
 - Coffeescript support
 
 ## Known Issues
-- Line numbers in Jade errors can be wrong, because we compile file by parts
+- Line numbers in Pug errors can be wrong, because we compile file by parts
 - If you on Coffescript, use this.contextfield or @.contextfield to access context and @fieldname to access component fields as in original Derby syntax
 
 ### Installation
 ```
-npm install derby-jade
+npm install derby-pug
 ```
 ### Setting
 ```js
-app.serverUse(module, 'derby-jade');
+app.serverUse(module, 'derby-pug');
 // before app.loadViews();
 ```
 
@@ -26,7 +26,7 @@ app.serverUse(module, 'derby-jade');
 If you want to use Coffeescript instead of Javascript in templates:
 
 ```js
-app.serverUse(module, 'derby-jade', {coffee: true});
+app.serverUse(module, 'derby-pug', {coffee: true});
 ```
 Then you can do something like this:
 ```html
@@ -43,7 +43,7 @@ if a and b
 
 ### Conditionals, `each`, `with`
 
-```jade
+```pug
 if _session.loggedIn
   h1 Hello, {{_session.username}}
 else
@@ -59,7 +59,7 @@ compiles to
 ```
 
 Another example:
-```jade
+```pug
 if _page.flash as #flash
   if #flash.error
     ul.alert.alert-error
@@ -96,7 +96,7 @@ else
 
 ### `import:` and template declarations
 
-```jade
+```pug
 import:(src='./auth', ns='')
 import(src='./games')
 
@@ -119,8 +119,8 @@ copyright:
 ```
 
 
-## Jade + Js
-```jade
+## Pug + Js
+```pug
 import(src='./home', ns='home')
 import:(src='./about')
 
@@ -167,8 +167,8 @@ matches-you-liked:
   h1 Matches you liked
 ```
 
-## Jade + Coffee
-```jade
+## Pug + Coffee
+```pug
 import(src='./home', ns='home')
 import:(src='./about')
 

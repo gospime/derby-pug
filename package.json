@@ -1,34 +1,47 @@
 {
-  "name": "derby-jade",
-  "description": "Jade for Derby.js",
-  "version": "0.6.21",
-  "author": {
-    "name": "Vladimir Makhaev",
-    "email": "vmakhaev@gmail.com"
+  "name": "@gospime/derby-pug",
+  "version": "1.0.0",
+  "description": "Pug compiler for Derby.js",
+  "keywords": [
+    "gospime",
+    "derby",
+    "derbyjs",
+    "pug",
+    "compiler"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "build": "npm install && npm audit fix",
+    "up": "npm update",
+    "check": "npm outdated",
+    "upgrade": "npm run up && npm run check && npm run build",
+    "push-version": "standard-version",
+    "ls-g": "npm list -g --depth=0",
+    "test": "mocha -R spec",
+    "prepublish": "npm prune"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/derbyparty/derby-jade.git"
+    "url": "git+https://github.com/gospime/derby-pug.git"
   },
+  "author": "Oleg Kravchuk <oleg.kravchuk@gospime.com> (https://gospime.com)",
+  "license": "MIT",
   "bugs": {
-    "url": "git://github.com/derbyparty/derby-jade/issues"
+    "url": "https://github.com/gospime/derby-pug/issues"
   },
-  "main": "index.js",
+  "homepage": "https://github.com/gospime/derby-pug#readme",
   "bin": {
-    "derby-jade": "./bin/derby-jade.js"
+    "derby-pug": "./bin/derby-pug.js"
   },
   "dependencies": {
-    "jade": "~1.3.1",
-    "coffee-script": "~1.7.1",
-    "debug": "~1.0.2",
+    "coffee-script": "^1.12.7",
     "commander": "~2.6.0",
-    "mkdirp": "~0.5.0"
+    "debug": "^4.1.1",
+    "mkdirp": "~0.5.0",
+    "pug": "^2.0.4"
   },
   "devDependencies": {
-    "mocha": "~1.20.1"
-  },
-  "scripts": {
-    "test": "mocha -R spec",
-    "prepublish": "npm prune"
+    "mocha": "^6.2.2",
+    "standard-version": "^7.0.0"
   }
 }

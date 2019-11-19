@@ -1,11 +1,11 @@
-var jade  = require('jade');
+var pug  = require('pug');
 var coffee = require('./coffee');
 var crypto = require('crypto');
 var path = require('path');
 var fs = require('fs');
 var os = require('os');
-//process.env.DEBUG = 'derby-jade';
-var debug = require('debug')('derby-jade');
+//process.env.DEBUG = 'derby-pug';
+var debug = require('debug')('derby-pug');
 var options = {};
 var defaultIndent = 2;
 //process.platform = 'win32';
@@ -18,8 +18,8 @@ function r(pattern, modifiers) {
 
 module.exports = exports = function (app, opts) {
   options = opts || {};
-  app.viewExtensions.push('.jade');
-  app.compilers['.jade'] = compiler;
+  app.viewExtensions.push('.pug');
+  app.compilers['.pug'] = compiler;
 };
 
 exports.compiler = compiler;
@@ -36,7 +36,7 @@ function addindent(source, count) {
 function preprocess(source) {
   return source
     // Replace if, else, each, etc statements to __derby-statement(type="if", value="expression")
-    // we cheat Jade, because it has it`s own statements
+    // we cheat Pug, because it has it`s own statements
     .replace(/^([ \t]+)(if|else(?:[ \t]+if)?|unless|each|with|bound|unbound|on)((?:[ \t]|\().+)?$/gm,
       function (statement, indentation, type, expression) {
         if (options.coffee) {
@@ -93,7 +93,7 @@ function postprocess(html, scripts) {
     .replace(/<\/__derby-statement>/g, '{{/}}');
 }
 
-function compiler(file, fileName, preprocessOnly, jadeOptions) {
+function compiler(file, fileName, preprocessOnly, pugOptions) {
   var out = [];
   var lines = file.replace(/\r\n/g, newLine).split(newLine);
   var lastComment = Infinity;
@@ -103,16 +103,16 @@ function compiler(file, fileName, preprocessOnly, jadeOptions) {
   var scripts = [];
   var block = [];
   var debugString;
-  jadeOptions = jadeOptions || options.globals || {};
+  pugOptions = pugOptions || options.globals || {};
 
   function renderBlock() {
     if (block.length) {
       debugString += ', block end';
       var source = preprocess(block.join(newLine));
       block = [];
-      jadeOptions.filename = fileName;
-      jadeOptions.pretty = true;
-      jade.render(source, jadeOptions, function (error, html) {
+      pugOptions.filename = fileName;
+      pugOptions.pretty = true;
+      pug.render(source, pugOptions, function (error, html) {
         if (error) throw error;
         out.push(postprocess(html, scripts));
       });
@@ -202,29 +202,29 @@ function compiler(file, fileName, preprocessOnly, jadeOptions) {
       continue;
     }
 
-    // Jade's "extends" and "include"
+    // Pug's "extends" and "include"
     // We have to compile the source file into a temporary one
     if ((indent === 0) && (
         extendMatch = statement.match(/^(extends|include) (\S+)/))) {
       extendFileName = path.resolve(path.dirname(fileName), extendMatch[2]);
-      extendFileName = extendFileName.replace(/\.jade\s*$/, '') + '.jade';
+      extendFileName = extendFileName.replace(/\.pug\s*$/, '') + '.pug';
       extendFile = fs.readFileSync(extendFileName, { encoding: 'utf8' });
-      extendFile = compiler(extendFile, extendFileName, true, jadeOptions);
+      extendFile = compiler(extendFile, extendFileName, true, pugOptions);
       extendTempFileName = path.join( os.tmpdir(),
-        crypto.createHash('md5').update(extendFileName).digest('hex')+ '.jade');
+        crypto.createHash('md5').update(extendFileName).digest('hex')+ '.pug');
       fs.writeFileSync(extendTempFileName, extendFile);
       block.push( extendMatch[1] + ' '
         + path.relative(fileName, extendTempFileName) );
-      debug(debugString + ', jade extends');
+      debug(debugString + ', pug extends');
       continue;
     }
 
-    // Other Jade reserved keywords
+    // Other Pug reserved keywords
     // Simply pass any preprocessing of them
     if (indent === 0 &&
         /^(\+|mixin|block|prepend|append)/.test(statement)) {
       block.push(line);
-      debug(debugString + ', jade reserved');
+      debug(debugString + ', pug reserved');
       continue;
     }
 
@@ -266,9 +266,9 @@ function compiler(file, fileName, preprocessOnly, jadeOptions) {
         } while (line !== oldLine);
       }
 
-      // Module mode for Jade (for usage with Webpack and custom css-loader)
+      // Module mode for Pug (for usage with Webpack and custom css-loader)
       // Ref: https://github.com/dmapper/style-guide/blob/master/stylus.md
-      if (( jadeOptions.moduleMode || options.moduleMode) && fileName) {
+      if (( pugOptions.moduleMode || options.moduleMode) && fileName) {
         var _componentName = path.basename(fileName, path.extname(fileName));
         if (_componentName === 'index') {
           _componentName = path.basename( path.dirname(fileName) );

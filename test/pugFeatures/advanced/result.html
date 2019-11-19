@@ -5,6 +5,6 @@
     <view name="expander" text="{{@title}}" expand="expand"></view>
   {{/}}
 <expander:>
-<a on-click="toggle()" class="item -divider center">
+  <a class="item -divider center" on-click="toggle()">
     {{if @expand}}↓    {{else}}↑{{/}}{{@text}}
     {{if @expand}}↓    {{else}}↑{{/}}</a>

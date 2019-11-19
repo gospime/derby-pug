@@ -8,11 +8,11 @@ var fs = require('fs')
   , resolve = path.resolve
   , join = path.join
   , mkdirp = require('mkdirp')
-  , dJade = require('../');
+  , dPug = require('../');
 
 var _app = { viewExtensions: [], compilers: {} };
-dJade(_app);
-dJade = _app.compilers['.jade'];
+dPug(_app);
+dPug = _app.compilers['.pug'];
 
 program
   .version(require('../package.json').version)
@@ -28,7 +28,6 @@ var files = program.args;
 // compile files
 
 if (files.length) {
-  console.log();
   files.forEach(renderFile);
   process.on('exit', function () {
     console.log();
@@ -47,7 +46,7 @@ function stdin() {
   process.stdin.on('data', function(chunk){ buf += chunk; });
   process.stdin.on('end', function(){
     var output;
-    output = dJade.compiler(buf);
+    output = dPug.compiler(buf);
     process.stdout.write(output);
   }).resume();
 
@@ -60,14 +59,14 @@ function stdin() {
 }
 
 /**
- * Process the given path, compiling the jade files found.
+ * Process the given path, compiling the pud files found.
  * Always walk the subdirectories.
  */
 
 function renderFile(path) {
-  var re = /\.jade$/;
+  var re = /\.pug$/;
   var stat = fs.lstatSync(path);
-  // Found jade file/\.jade$/
+  // Found pug file/\.pug$/
   if (stat.isFile() && re.test(path)) {
     var str = fs.readFileSync(path, 'utf8');
     var filename = path;
@@ -78,7 +77,7 @@ function renderFile(path) {
     if (program.out) path = join(program.out, basename(path));
     var dir = resolve(dirname(path));
     mkdirp.sync(dir, 0755);
-    var output = dJade(str, filename);
+    var output = dPug(str, filename);
     fs.writeFileSync(path, output);
     console.log('  \033[90mrendered \033[36m%s\033[0m', path);
   // Found directory

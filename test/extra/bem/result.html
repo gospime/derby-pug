@@ -2,7 +2,7 @@
 <index: element="LandingPromo">
   <div class="LandingPromo {{@class}}">
     <div class="LandingPromo-wrapper">
-      <view name="logo" class="LandingPromo-logo"></view>
+      <view class="LandingPromo-logo" name="logo"></view>
       <h1 class="center"><span class="LandingPromo-headerLeft">We turn Ideas&nbsp;</span><span class="LandingPromo-headerMiddle">into&nbsp;</span><span class="LandingPromo-headerRight">Products</span></h1>
       <div class="LandingPromo-description">
         Creates websites &sp;
@@ -10,7 +10,7 @@
         H&M.ping Hello world. &sp;
         other. Convert an idea<br>
         into a prototype.
-      </div><a on-click="page.modal.open('ContactUs', { text: 'How can we help?', email: 'contact' })" class="Button">Contact us now</a><a href="#companies" class="LandingPromo-arrow"></a>
+      </div><a class="Button" on-click="page.modal.open('ContactUs', { text: 'How can we help?', email: 'contact' })">Contact us now</a><a class="LandingPromo-arrow" href="#companies"></a>
     </div>
   </div>
 <one: bem="One">
